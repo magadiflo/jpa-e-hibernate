@@ -1,21 +1,15 @@
 package org.magadiflo.hibernate.app;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.magadiflo.hibernate.app.entity.Cliente;
 import org.magadiflo.hibernate.app.util.JpaUtil;
 
-import java.util.List;
-
-public class HibernateListar {
-
+public class HibernateFind {
     public static void main(String[] args) {
-
         EntityManager em = JpaUtil.getEntityManager();
-        List<Cliente> clientes = em.createQuery("SELECT c FROM Cliente c", Cliente.class).getResultList();
-        clientes.forEach(System.out::println);
-        em.close();
-
-
+        Long id = 3L;
+        Cliente c = em.find(Cliente.class, id); //find(), siempre hace la búsqueda por la PK
+        System.out.println(c);
     }
-
 }
