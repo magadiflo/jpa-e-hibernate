@@ -5,14 +5,15 @@ import jakarta.persistence.Query;
 import org.magadiflo.hibernate.app.entity.Cliente;
 import org.magadiflo.hibernate.app.util.JpaUtil;
 
-public class HibernatePorId {
+import java.util.List;
+
+public class HibernateResultListWhere {
     public static void main(String[] args) {
         EntityManager em = JpaUtil.getEntityManager();
-        Query query = em.createQuery("SELECT c FROM Cliente c WHERE c.id = ?1", Cliente.class);
-        Long id = 2L;
-        query.setParameter(1, id);
-        Cliente c = (Cliente) query.getSingleResult();
-        System.out.println(c);
+        Query query = em.createQuery("SELECT c FROM Cliente c WHERE c.formaPago = ?1", Cliente.class);
+        query.setParameter(1, "debito");
+        List<Cliente> clientes = query.getResultList();
+        System.out.println(clientes);
         em.close();
     }
 }
