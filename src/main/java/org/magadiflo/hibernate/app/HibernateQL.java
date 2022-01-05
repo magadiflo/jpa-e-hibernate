@@ -74,12 +74,32 @@ public class HibernateQL {
         nombres.forEach(System.out::println);
 
         System.out.println("=============== CONSULTAR CON FORMAS DE PAGOS ÚNICAS ===============");
-        List<String> formasPago = em.createQuery("SELECT DISTINCT(c.formaPago) FROM Cliente c", String.class).getResultList();
+        List<String> formasPago = em.createQuery("SELECT DISTINCT(c.formaPago) FROM Cliente AS c", String.class).getResultList();
         formasPago.forEach(System.out::println);
 
         System.out.println("=============== CONSULTAR CON NÚMERO DE FORMAS DE PAGO ÚNICAS ===============");
-        Long cantFormasPago = em.createQuery("SELECT COUNT(DISTINCT(c.formaPago)) FROM Cliente c", Long.class).getSingleResult();
+        Long cantFormasPago = em.createQuery("SELECT COUNT(DISTINCT(c.formaPago)) FROM Cliente AS c", Long.class).getSingleResult();
         System.out.println("Número de formas de pago: " + cantFormasPago);
+
+        System.out.println("=============== CONSULTAR CON NOMBRE Y APELLIDOS CONCATENADOS - FORMA 1 ===============");
+        nombres = em.createQuery("SELECT CONCAT(c.nombre, ' ', c.apellido) AS nombreCompleto FROM Cliente AS c", String.class).getResultList();
+        nombres.forEach(System.out::println);
+
+        System.out.println("=============== CONSULTAR CON NOMBRE Y APELLIDOS CONCATENADOS - FORMA 2 ===============");
+        nombres = em.createQuery("SELECT c.nombre || ' ' || c.apellido AS nombreCompleto FROM Cliente AS c", String.class).getResultList();
+        nombres.forEach(System.out::println);
+
+        System.out.println("=============== CONSULTAR CON NOMBRE Y APELLIDOS CONCATENADOS EN MAYÚSCULA ===============");
+        nombres = em.createQuery("SELECT UPPER(CONCAT(c.nombre, ' ', c.apellido)) AS nombreCompleto FROM Cliente AS c", String.class).getResultList();
+        nombres.forEach(System.out::println);
+
+        System.out.println("=============== CONSULTAR PARA BUSCAR POR NOMBRE  ===============");
+        String param = "lic";
+        clientes = em.createQuery("SELECT c FROM Cliente AS c WHERE c.nombre LIKE :parametro", Cliente.class)
+                .setParameter("parametro", "%" + param + "%")
+                .getResultList();
+        clientes.forEach(System.out::println);
+
 
         em.close();
     }
