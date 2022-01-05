@@ -33,8 +33,8 @@ public class HibernateQL {
                 .setParameter("id", 3L)
                 .getSingleResult();
         AtomicReference<Long> id = new AtomicReference<>((Long) campos[0]);
-        String nombre = (String)campos[1];
-        String apellido = (String)campos[2];
+        String nombre = (String) campos[1];
+        String apellido = (String) campos[2];
         System.out.println("id: " + id + ", nombre: " + nombre + ", apellido: " + apellido);
 
         System.out.println("=============== CONSULTAR POR CAMPOS PERSONALIZADOS LISTA ===============");
@@ -46,7 +46,7 @@ public class HibernateQL {
 
         System.out.println("=============== CONSULTAR POR CLIENTE Y FORMA DE PAGO ===============");
         registros = em.createQuery("SELECT c, c.formaPago FROM Cliente c", Object[].class)
-                        .getResultList();
+                .getResultList();
         registros.forEach(reg -> {
             Cliente c = (Cliente) reg[0];
             String formaPago = (String) reg[1];
@@ -107,6 +107,36 @@ public class HibernateQL {
         System.out.println("=============== CONSULTAS CON ORDEN ===============");
         clientes = em.createQuery("SELECT c FROM Cliente AS c ORDER BY c.nombre DESC", Cliente.class).getResultList();
         clientes.forEach(System.out::println);
+
+        System.out.println("=============== CONSULTA DEL TOTAL DE REGISTROS DE LA TABLA ===============");
+        Long total = em.createQuery("SELECT COUNT(c) AS total FROM Cliente AS c", Long.class).getSingleResult();
+        System.out.println("Total de registros: " + total);
+
+        System.out.println("=============== CONSULTA DEL VALOR MÍNIMO DEL ID ===============");
+        Long minimo = em.createQuery("SELECT MIN(c.id) AS minimo FROM Cliente AS c", Long.class).getSingleResult();
+        System.out.println("Id mínimo: " + minimo);
+
+        System.out.println("=============== CONSULTA DEL VALOR MÁXIMO DEL ID ===============");
+        Long maximo = em.createQuery("SELECT MAX(c.id) AS maximo FROM Cliente AS c", Long.class).getSingleResult();
+        System.out.println("Id máximo: " + maximo);
+
+        System.out.println("=============== CONSULTA CON NOMBRE Y SU LARGO ===============");
+        registros = em.createQuery("SELECT c.nombre, LENGTH(c.nombre)  FROM Cliente AS c", Object[].class).getResultList();
+        registros.forEach(reg -> {
+            System.out.println("nombre: " + reg[0] + ", largo: " + reg[1]);
+        });
+
+        System.out.println("=============== CONSULTA CON NOMBRE MÁS CORTO ===============");
+        Integer min = em.createQuery("SELECT MIN(LENGTH(c.nombre))  FROM Cliente AS c", Integer.class).getSingleResult();
+        System.out.println("El nombre más corto tiene " + min + " caracteres");
+
+        System.out.println("=============== CONSULTA CON NOMBRE MÁS LARGO ===============");
+        Integer max = em.createQuery("SELECT MAX(LENGTH(c.nombre))  FROM Cliente AS c", Integer.class).getSingleResult();
+        System.out.println("El nombre más corto tiene " + max + " caracteres");
+
+        System.out.println("=============== CONSULTAS RESUMEN FUNCIONES AGREGACIONES COUNT, MIN, MAX, AVG, SUM ===============");
+        Object[] estadisticas = em.createQuery("SELECT MIN(c.id), MAX(c.id), SUM(c.id), COUNT(c.id), AVG(LENGTH(c.nombre)) FROM Cliente AS c", Object[].class).getSingleResult();
+        System.out.println("Min: "+ estadisticas[0] + ", max: " + estadisticas[1] + ", sum: " + estadisticas[2] + ", count: " + estadisticas[3] + ", promedio: " + estadisticas[4]);
 
         em.close();
     }
