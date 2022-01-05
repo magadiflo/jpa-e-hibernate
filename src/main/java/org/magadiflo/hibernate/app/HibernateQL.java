@@ -2,6 +2,7 @@ package org.magadiflo.hibernate.app;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import org.magadiflo.hibernate.app.dominio.ClienteDTO;
 import org.magadiflo.hibernate.app.entity.Cliente;
 import org.magadiflo.hibernate.app.util.JpaUtil;
 
@@ -42,6 +43,27 @@ public class HibernateQL {
         registros.forEach(reg -> {
             System.out.println("id: " + reg[0] + ", nombre: " + reg[1] + ", apellido: " + reg[2]);
         });
+
+        System.out.println("=============== CONSULTAR POR CLIENTE Y FORMA DE PAGO ===============");
+        registros = em.createQuery("SELECT c, c.formaPago FROM Cliente c", Object[].class)
+                        .getResultList();
+        registros.forEach(reg -> {
+            Cliente c = (Cliente) reg[0];
+            String formaPago = (String) reg[1];
+            System.out.println("Forma pago: " + formaPago + "," + c);
+        });
+
+        System.out.println("=============== CONSULTAR QUE PUEBLA Y DEVUELVE OBJETO ENTITY DE CLASE PERSONALIZADA ===============");
+        clientes = em.createQuery("SELECT new Cliente(c.nombre, c.apellido) FROM Cliente c", Cliente.class)
+                .getResultList();
+        clientes.forEach(System.out::println);
+
+        //Importante agregar toda la ruta de la clase ClienteDTO, si no lanzará un error, ya que el ClienteDTO
+        //como no es clase entity no lo va a encontrar en el contexto de persistencia
+        System.out.println("=============== CONSULTAR QUE PUEBLA Y DEVUELVE OBJETO DTO DE CLASE PERSONALIZADA ===============");
+        List<ClienteDTO> clientesDTO = em.createQuery("SELECT new org.magadiflo.hibernate.app.dominio.ClienteDTO(c.nombre, c.apellido) FROM Cliente c", ClienteDTO.class)
+                .getResultList();
+        clientesDTO.forEach(System.out::println);
 
         em.close();
     }
