@@ -33,7 +33,7 @@ public class HibernateQL {
         Object campos[] = em.createQuery("SELECT c.id, c.nombre, c.apellido FROM Cliente c WHERE c.id = :id", Object[].class)
                 .setParameter("id", 3L)
                 .getSingleResult();
-        AtomicReference<Long> id = new AtomicReference<>((Long) campos[0]);
+        Long id = (Long) campos[0];
         String nombre = (String) campos[1];
         String apellido = (String) campos[2];
         System.out.println("id: " + id + ", nombre: " + nombre + ", apellido: " + apellido);
