@@ -65,6 +65,22 @@ public class HibernateQL {
                 .getResultList();
         clientesDTO.forEach(System.out::println);
 
+        System.out.println("=============== CONSULTAR CON NOMBRES DE CLIENTES ===============");
+        List<String> nombres = em.createQuery("SELECT c.nombre FROM Cliente c", String.class).getResultList();
+        nombres.forEach(System.out::println);
+
+        System.out.println("=============== CONSULTAR CON NOMBRES ÚNICOS DE CLIENTES ===============");
+        nombres = em.createQuery("SELECT DISTINCT(c.nombre) FROM Cliente c", String.class).getResultList();
+        nombres.forEach(System.out::println);
+
+        System.out.println("=============== CONSULTAR CON FORMAS DE PAGOS ÚNICAS ===============");
+        List<String> formasPago = em.createQuery("SELECT DISTINCT(c.formaPago) FROM Cliente c", String.class).getResultList();
+        formasPago.forEach(System.out::println);
+
+        System.out.println("=============== CONSULTAR CON NÚMERO DE FORMAS DE PAGO ÚNICAS ===============");
+        Long cantFormasPago = em.createQuery("SELECT COUNT(DISTINCT(c.formaPago)) FROM Cliente c", Long.class).getSingleResult();
+        System.out.println("Número de formas de pago: " + cantFormasPago);
+
         em.close();
     }
 }
