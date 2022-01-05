@@ -6,6 +6,7 @@ import org.magadiflo.hibernate.app.dominio.ClienteDTO;
 import org.magadiflo.hibernate.app.entity.Cliente;
 import org.magadiflo.hibernate.app.util.JpaUtil;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -137,6 +138,22 @@ public class HibernateQL {
         System.out.println("=============== CONSULTAS RESUMEN FUNCIONES AGREGACIONES COUNT, MIN, MAX, AVG, SUM ===============");
         Object[] estadisticas = em.createQuery("SELECT MIN(c.id), MAX(c.id), SUM(c.id), COUNT(c.id), AVG(LENGTH(c.nombre)) FROM Cliente AS c", Object[].class).getSingleResult();
         System.out.println("Min: "+ estadisticas[0] + ", max: " + estadisticas[1] + ", sum: " + estadisticas[2] + ", count: " + estadisticas[3] + ", promedio: " + estadisticas[4]);
+
+        System.out.println("=============== CONSULTA CON NOMBRE MÁS CORTO Y SU LARGO ===============");
+        registros = em.createQuery("SELECT c.nombre, LENGTH(c.nombre) FROM Cliente AS c WHERE LENGTH(c.nombre) = (SELECT MIN(LENGTH(c.nombre)) FROM Cliente AS c)", Object[].class).getResultList();
+        registros.forEach(reg -> {
+            System.out.println("nombre: " + reg[0] + ", largo: " + reg[1]);
+        });
+
+        System.out.println("=============== CONSULTA PARA OBTENER EL ÚLTIMO REGISTRO ===============");
+        Cliente ultimoCliente = em.createQuery("SELECT c FROM Cliente AS c WHERE c.id = (SELECT MAX(c.id) FROM Cliente AS c)", Cliente.class).getSingleResult();
+        System.out.println(ultimoCliente);
+
+        System.out.println("=============== CONSULTA WHERE IN ===============");
+        clientes = em.createQuery("SELECT c FROM Cliente AS c WHERE c.id IN :ids", Cliente.class)
+                .setParameter("ids", Arrays.asList(1L,3L,5L))
+                .getResultList();
+        clientes.forEach(System.out::println);
 
         em.close();
     }
