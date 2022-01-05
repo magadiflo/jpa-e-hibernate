@@ -100,6 +100,13 @@ public class HibernateQL {
                 .getResultList();
         clientes.forEach(System.out::println);
 
+        System.out.println("=============== CONSULTAS POR RANGOS ===============");
+        clientes = em.createQuery("SELECT c FROM Cliente AS c WHERE c.id BETWEEN 2 AND 5", Cliente.class).getResultList();
+        clientes.forEach(System.out::println);
+
+        System.out.println("=============== CONSULTAS CON ORDEN ===============");
+        clientes = em.createQuery("SELECT c FROM Cliente AS c ORDER BY c.nombre DESC", Cliente.class).getResultList();
+        clientes.forEach(System.out::println);
 
         em.close();
     }
