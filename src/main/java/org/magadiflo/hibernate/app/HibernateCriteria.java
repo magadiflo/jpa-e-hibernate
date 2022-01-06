@@ -126,6 +126,21 @@ public class HibernateCriteria {
         nombres = em.createQuery(queryString).getResultList();
         nombres.forEach(System.out::println);
 
+        System.out.println("========================== CONSULTA DE CAMPOS PERSONALIZADOS DEL ENTITY CLIENTE CON WHERE ==========================");
+        CriteriaQuery<Object[]> queryObject = criteria.createQuery(Object[].class);
+        from = queryObject.from(Cliente.class);
+        queryObject.multiselect(from.get("id"), from.get("nombre"), from.get("apellido")).where(criteria.like(from.get("nombre"), "%al%"));
+        List<Object[]> registros = em.createQuery(queryObject).getResultList();
+        registros.forEach(reg -> {
+            System.out.println("id: " + reg[0] + ", nombre: " + reg[1] + ", apellido: " + reg[2]);
+        });
+
+        System.out.println("========================== CONSULTA DE CAMPOS PERSONALIZADOS DEL ENTITY CLIENTE CON WHERE ID ==========================");
+        queryObject = criteria.createQuery(Object[].class);
+        from = queryObject.from(Cliente.class);
+        queryObject.multiselect(from.get("id"), from.get("nombre"), from.get("apellido")).where(criteria.equal(from.get("id"), 1L));
+        Object[] registro = em.createQuery(queryObject).getSingleResult();
+        System.out.println("id: " + registro[0] + ", nombre: " + registro[1] + ", apellido: " + registro[2]);
 
         em.close();
     }
