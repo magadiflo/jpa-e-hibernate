@@ -90,6 +90,38 @@ public class HibernateCriteria {
         clientes = em.createQuery(query).getResultList();
         clientes.forEach(System.out::println);
 
+        System.out.println("========================== CONSULTA CON ORDER BY ASC - DESC ==========================");
+        query = criteria.createQuery(Cliente.class);
+        from = query.from(Cliente.class);
+        query.select(from).orderBy(criteria.asc(from.get("nombre")), criteria.desc(from.get("apellido")));
+        clientes = em.createQuery(query).getResultList();
+        clientes.forEach(System.out::println);
+
+        System.out.println("========================== CONSULTA POR ID ==========================");
+        query = criteria.createQuery(Cliente.class);
+        from = query.from(Cliente.class);
+        ParameterExpression<Long> idParam = criteria.parameter(Long.class, "id");
+        query.select(from).where(criteria.equal(from.get("id"), idParam));
+        Cliente cliente = em.createQuery(query).setParameter("id", 3L).getSingleResult();
+        System.out.println(cliente);
+
+        System.out.println("========================== CONSULTA SOLO EL NOMBRE DE LOS CLIENTES ==========================");
+        CriteriaQuery<String> queryString = criteria.createQuery(String.class);
+        from = queryString.from(Cliente.class);
+        queryString.select(from.get("nombre"));
+        List<String> nombres = em.createQuery(queryString).getResultList();
+        nombres.forEach(System.out::println);
+
+        System.out.println("========================== CONSULTA SOLO EL NOMBRE (EN MAYÚSCULA) DE LOS CLIENTES ÚNICOS CON DISTINCT ==========================");
+        queryString = criteria.createQuery(String.class);
+        from = queryString.from(Cliente.class);
+        queryString.select(criteria.upper(from.get("nombre"))).distinct(true);
+        nombres = em.createQuery(queryString).getResultList();
+        nombres.forEach(System.out::println);
+
+
+
+
 
         em.close();
     }
