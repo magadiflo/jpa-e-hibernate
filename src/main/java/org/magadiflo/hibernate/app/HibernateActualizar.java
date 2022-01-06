@@ -11,13 +11,16 @@ public class HibernateActualizar {
             em.getTransaction().begin();
 
             Cliente cliente = new Cliente();
-            cliente.setId(1L);
-            cliente.setNombre("Martín Gaspar");
-            cliente.setApellido("Díaz Flores");
-            cliente.setFormaPago("credito");
+            cliente.setId(6L);
+            cliente.setNombre("Hazael");
+            cliente.setApellido("Díaz Ardiles");
+            cliente.setFormaPago("debito");
 
             em.merge(cliente);
             em.getTransaction().commit();
+
+            cliente = em.find(Cliente.class, cliente.getId());
+            System.out.println("Cliente actualizado: " + cliente);
         } catch (Exception e) {
             em.getTransaction().rollback();
             e.printStackTrace();
