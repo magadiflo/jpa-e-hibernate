@@ -142,6 +142,38 @@ public class HibernateCriteria {
         Object[] registro = em.createQuery(queryObject).getSingleResult();
         System.out.println("id: " + registro[0] + ", nombre: " + registro[1] + ", apellido: " + registro[2]);
 
+        System.out.println("========================== CONTRAR REGISTROS DE LA CONSULTA CON COUNT ==========================");
+        CriteriaQuery<Long> queryLong = criteria.createQuery(Long.class);
+        from = queryLong.from(Cliente.class);
+        queryLong.select(criteria.count(from.get("id")));
+        Long count = em.createQuery(queryLong).getSingleResult();
+        System.out.println("cantidad: " + count);
+
+        System.out.println("========================== SUMAR DATOS DE ALGÚN DATO DE LA TABLA ==========================");
+        queryLong = criteria.createQuery(Long.class);
+        from = queryLong.from(Cliente.class);
+        queryLong.select(criteria.sum(from.get("id")));
+        Long sum = em.createQuery(queryLong).getSingleResult();
+        System.out.println("Suma: " + sum);
+
+        System.out.println("========================== CONSULTA CON EL MÁXIMO ID ==========================");
+        queryLong = criteria.createQuery(Long.class);
+        from = queryLong.from(Cliente.class);
+        queryLong.select(criteria.max(from.get("id")));
+        Long max = em.createQuery(queryLong).getSingleResult();
+        System.out.println("Máximo: " + max);
+
+        System.out.println("========================== EJEMPLO VARIOS RESULTADOS DE FUNCIONES DE AGREGACIÓN EN UNA SOLA CONSULTA ==========================");
+        queryObject = criteria.createQuery(Object[].class);
+        from = queryObject.from(Cliente.class);
+        queryObject.multiselect(
+                criteria.count(from.get("id")),
+                criteria.sum(from.get("id")),
+                criteria.max(from.get("id")),
+                criteria.min(from.get("id")));
+        registro = em.createQuery(queryObject).getSingleResult();
+        System.out.println("count: " + registro[0] + ", sum: " + registro[1] + ", max: " + registro[2] + ", min: " + registro[3]);
+
         em.close();
     }
 
