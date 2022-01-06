@@ -2,8 +2,6 @@ package org.magadiflo.hibernate.app.entity;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "clientes")
 public class Cliente {
@@ -19,11 +17,8 @@ public class Cliente {
     @Column(name = "forma_pago")
     private String formaPago;
 
-    @Column(name = "creado_en")
-    private LocalDateTime creadoEn;
-
-    @Column(name = "editado_en")
-    private LocalDateTime editadoEn;
+    @Embedded
+    private Auditoria audit = new Auditoria();
 
     public Cliente() {
     }
@@ -38,18 +33,6 @@ public class Cliente {
         this.nombre = nombre;
         this.apellido = apellido;
         this.formaPago = formaPago;
-    }
-
-    @PrePersist
-    public void prePersist() {
-        System.out.println("Inicializar algo justo antes del persist");
-        this.creadoEn = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        System.out.println("Inicializar algo justo antes del update");
-        this.editadoEn = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -84,22 +67,6 @@ public class Cliente {
         this.formaPago = formaPago;
     }
 
-    public LocalDateTime getCreadoEn() {
-        return creadoEn;
-    }
-
-    public void setCreadoEn(LocalDateTime creadoEn) {
-        this.creadoEn = creadoEn;
-    }
-
-    public LocalDateTime getEditadoEn() {
-        return editadoEn;
-    }
-
-    public void setEditadoEn(LocalDateTime editadoEn) {
-        this.editadoEn = editadoEn;
-    }
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Cliente{");
@@ -107,8 +74,8 @@ public class Cliente {
         sb.append(", nombre='").append(nombre).append('\'');
         sb.append(", apellido='").append(apellido).append('\'');
         sb.append(", formaPago='").append(formaPago).append('\'');
-        sb.append(", creadoEn=").append(creadoEn);
-        sb.append(", editadoEn=").append(editadoEn);
+        sb.append(", creadoEn=").append(audit.getCreadoEn());
+        sb.append(", editadoEn=").append(audit.getEditadoEn());
         sb.append('}');
         return sb.toString();
     }
