@@ -8,6 +8,7 @@ import jakarta.persistence.criteria.Root;
 import org.magadiflo.hibernate.app.entity.Cliente;
 import org.magadiflo.hibernate.app.util.JpaUtil;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class HibernateCriteria {
@@ -43,6 +44,42 @@ public class HibernateCriteria {
         query = criteria.createQuery(Cliente.class);
         from = query.from(Cliente.class);
         query.select(from).where(criteria.between(from.get("id"), 2L, 6L));
+        clientes = em.createQuery(query).getResultList();
+        clientes.forEach(System.out::println);
+
+        System.out.println("========================== CONSULTA WHERE IN ==========================");
+        query = criteria.createQuery(Cliente.class);
+        from = query.from(Cliente.class);
+        ParameterExpression<List> listParam = criteria.parameter(List.class, "nombres");
+        query.select(from).where(from.get("nombre").in(listParam));
+        clientes = em.createQuery(query).setParameter("nombres", Arrays.asList("Alicia", "Gabriel", "Raúl")).getResultList();
+        clientes.forEach(System.out::println);
+
+        System.out.println("========================== FILTRAR USANDO PREDICADOS MAYOR QUE O MAYOR IGUAL QUE ==========================");
+        query = criteria.createQuery(Cliente.class);
+        from = query.from(Cliente.class);
+        query.select(from).where(criteria.ge(from.get("id"), 3L)); //id >= 3L
+        clientes = em.createQuery(query).getResultList();
+        clientes.forEach(System.out::println);
+
+        System.out.println("========================== FILTRAR USANDO PREDICADOS MAYOR QUE ==========================");
+        query = criteria.createQuery(Cliente.class);
+        from = query.from(Cliente.class);
+        query.select(from).where(criteria.gt(criteria.length(from.get("nombre")), 5L)); //longitud > 5L
+        clientes = em.createQuery(query).getResultList();
+        clientes.forEach(System.out::println);
+
+        System.out.println("========================== FILTRAR USANDO PREDICADOS MENOR IGUAL QUE ==========================");
+        query = criteria.createQuery(Cliente.class);
+        from = query.from(Cliente.class);
+        query.select(from).where(criteria.le(criteria.length(from.get("nombre")), 5L)); //longitud <= 4L
+        clientes = em.createQuery(query).getResultList();
+        clientes.forEach(System.out::println);
+
+        System.out.println("========================== FILTRAR USANDO PREDICADOS MENOR QUE ==========================");
+        query = criteria.createQuery(Cliente.class);
+        from = query.from(Cliente.class);
+        query.select(from).where(criteria.lt(criteria.length(from.get("nombre")), 4L)); //longitud < 4L
         clientes = em.createQuery(query).getResultList();
         clientes.forEach(System.out::println);
 
