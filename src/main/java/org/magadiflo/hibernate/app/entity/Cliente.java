@@ -2,6 +2,8 @@ package org.magadiflo.hibernate.app.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "clientes")
 public class Cliente {
@@ -69,13 +71,15 @@ public class Cliente {
 
     @Override
     public String toString() {
+        LocalDateTime creado = this.audit != null ? audit.getCreadoEn() : null;
+        LocalDateTime editado = this.audit != null ? audit.getEditadoEn() : null;
         final StringBuilder sb = new StringBuilder("Cliente{");
         sb.append("id=").append(id);
         sb.append(", nombre='").append(nombre).append('\'');
         sb.append(", apellido='").append(apellido).append('\'');
         sb.append(", formaPago='").append(formaPago).append('\'');
-        sb.append(", creadoEn=").append(audit.getCreadoEn());
-        sb.append(", editadoEn=").append(audit.getEditadoEn());
+        sb.append(", creadoEn=").append(creado);
+        sb.append(", editadoEn=").append(editado);
         sb.append('}');
         return sb.toString();
     }
