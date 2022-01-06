@@ -1,10 +1,7 @@
 package org.magadiflo.hibernate.app;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.ParameterExpression;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.magadiflo.hibernate.app.entity.Cliente;
 import org.magadiflo.hibernate.app.util.JpaUtil;
 
@@ -80,6 +77,16 @@ public class HibernateCriteria {
         query = criteria.createQuery(Cliente.class);
         from = query.from(Cliente.class);
         query.select(from).where(criteria.lt(criteria.length(from.get("nombre")), 4L)); //longitud < 4L
+        clientes = em.createQuery(query).getResultList();
+        clientes.forEach(System.out::println);
+
+        System.out.println("========================== CONSULTA CON LOS PREDICADOS CONJUNCIÓN AND Y DISYUNCIÓN OR ==========================");
+        query = criteria.createQuery(Cliente.class);
+        from = query.from(Cliente.class);
+        Predicate porNombre = criteria.equal(from.get("nombre"), "Alicia");
+        Predicate porFormaPago = criteria.equal(from.get("formaPago"), "credito");
+        Predicate p3 = criteria.ge(from.get("id"), 4L);
+        query.select(from).where(criteria.and(p3, criteria.or(porNombre, porFormaPago)));
         clientes = em.createQuery(query).getResultList();
         clientes.forEach(System.out::println);
 
